@@ -1,0 +1,52 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Istio-Dashboard API",
+        "title": "Istio-Dashboard",
+        "contact": {
+            "name": "sHuXnHs",
+            "email": "610087273@qq.com"
+        },
+        "license": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/project/list": {
+            "get": {
+                "description": "获取所有的网格",
+                "tags": [
+                    "project"
+                ],
+                "summary": "获取所有网格",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.Result": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "err_code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

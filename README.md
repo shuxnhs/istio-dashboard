@@ -1,1 +1,1 @@
-# istio-docter
+# istio-dashboard
