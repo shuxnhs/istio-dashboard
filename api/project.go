@@ -7,9 +7,10 @@ import (
 )
 
 type Project struct {
-	Cid         string
-	Description string
-	Status      int64
+	Id          int64  `json:"id"`
+	Cid         string `json:"cid"`
+	Description string `json:"description"`
+	Status      int64  `json:"status"`
 }
 
 // ListProjects
@@ -21,11 +22,13 @@ type Project struct {
 func ListProjects(ctx *gin.Context) {
 	projects, err := model.KubeConfigDB.ListKubeConfig()
 	if err != nil {
-
+		ResponseData(ctx, CodeDbError, nil)
+		return
 	}
-	projectRsp := make([]Project, len(*projects))
+	projectRsp := make([]Project, 0)
 	for _, project := range *projects {
 		projectRsp = append(projectRsp, Project{
+			Id:          project.Id,
 			Cid:         project.Cid,
 			Description: project.Description,
 			Status:      project.Status,

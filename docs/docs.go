@@ -28,6 +28,32 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/kube/namespace/list": {
+            "get": {
+                "description": "获取所有命名空间",
+                "tags": [
+                    "kube"
+                ],
+                "summary": "获取所有命名空间",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
+        },
         "/project/list": {
             "get": {
                 "description": "获取所有的网格",
@@ -35,6 +61,46 @@ var doc = `{
                     "project"
                 ],
                 "summary": "获取所有网格",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sidecar/eds/list": {
+            "get": {
+                "description": "获取边车的EDS(端点配置)",
+                "tags": [
+                    "sidecar"
+                ],
+                "summary": "获取边车的EDS(端点配置)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pod",
+                        "name": "pod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "ok",

@@ -34,6 +34,10 @@ func ResponseOK(ctx *gin.Context) {
 	NewResponse(http.StatusOK, CodeSuccess, "", nil).Resp(ctx)
 }
 
+func ResponseError(ctx *gin.Context, code int, err error) {
+	NewResponse(code, CodeSuccess, err.Error(), nil).Resp(ctx)
+}
+
 func ResponseData(ctx *gin.Context, errCode int, data interface{}) {
 	NewResponse(http.StatusOK, errCode, "", data).Resp(ctx)
 }

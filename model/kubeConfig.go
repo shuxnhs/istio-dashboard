@@ -49,8 +49,26 @@ func (k *KubeConfig) ListKubeConfig() (*[]KubeConfig, error) {
 	return projects.(*[]KubeConfig), err
 }
 
+// GetKubeConfigById 根据集群id获取kube_config配置
+func (k *KubeConfig) GetKubeConfigById(id int64) (*KubeConfig, error) {
+	whereScopes := func(db *gorm.DB) *gorm.DB {
+		return db.Where(map[string]interface{}{"id": id})
+	}
+	data, err := NewDataModel().GetData(NewKubeConfigModel(), whereScopes, []string{"*"})
+	if err == nil {
+		kubeConfigData, ok := data.(*KubeConfig)
+		if !ok || kubeConfigData.Id == 0 {
+			return nil, KubeConfigNoExistErr
+		} else {
+			return kubeConfigData, nil
+		}
+	} else {
+		return nil, err
+	}
+}
+
 // GetKubeConfigByCid 根据集群id获取kube_config配置
-func (k *KubeConfig) GetKubeConfigByCid(cid int64) (*KubeConfig, error) {
+func (k *KubeConfig) GetKubeConfigByCid(cid string) (*KubeConfig, error) {
 	whereScopes := func(db *gorm.DB) *gorm.DB {
 		return db.Where(map[string]interface{}{"cid": cid, "status": StatusNormal})
 	}
