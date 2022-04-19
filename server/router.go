@@ -52,6 +52,11 @@ func NewRouter() *gin.Engine {
 			eds.GET("list", api.ListEDS)
 		}
 
+		cds := sidecar.Group("/cds")
+		{
+			cds.GET("list", api.ListCDS)
+		}
+
 	}
 	return r
 }

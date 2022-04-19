@@ -8,6 +8,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
+	github.com/golang/protobuf v1.5.2
 	github.com/kiali/kiali v1.49.0
 	github.com/spf13/viper v1.11.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14

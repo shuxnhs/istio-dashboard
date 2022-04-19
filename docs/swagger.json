@@ -55,6 +55,86 @@
                 }
             }
         },
+        "/sidecar/cds/list": {
+            "get": {
+                "description": "获取边车的CDS(集群配置)",
+                "tags": [
+                    "sidecar"
+                ],
+                "summary": "获取边车的CDS(集群配置)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pod",
+                        "name": "pod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/sidecar/check": {
+            "get": {
+                "description": "检查边车配置是否同步",
+                "tags": [
+                    "sidecar"
+                ],
+                "summary": "检查边车配置是否同步",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pod",
+                        "name": "pod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
+        },
         "/sidecar/eds/list": {
             "get": {
                 "description": "获取边车的EDS(端点配置)",

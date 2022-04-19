@@ -2,7 +2,6 @@ package sidecar
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -51,21 +50,24 @@ func (s *Sidecar) GetEDS(namespace, pod string) (EDSInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	cluster, err := s.ClustersFormat(config)
+	cluster, err := NewCluster(config)
 	if err != nil {
 		return nil, err
 	}
 	return ClustersToEDSInfo(cluster), nil
 }
 
-func (s *Sidecar) ClustersFormat(config []byte) (*Cluster, error) {
-	cluster := &Cluster{}
-	err := json.Unmarshal(config, cluster)
+func (s *Sidecar) GetCDS(namespace, pod string) (interface{}, error) {
+	path := "config_dump"
+	config, err := s.EnvoyDo(context.TODO(), pod, namespace, "GET", path)
 	if err != nil {
 		return nil, err
 	}
-	return cluster, nil
-
+	configDump, err := NewConfigDump(config)
+	if err != nil {
+		return nil, err
+	}
+	return ClustersToCDS(configDump), nil
 }
 
 func (s *Sidecar) EnvoyDo(ctx context.Context, podName, podNamespace, method, path string) ([]byte, error) {
