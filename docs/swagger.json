@@ -214,6 +214,46 @@
                     }
                 }
             }
+        },
+        "/sidecar/rds/list": {
+            "get": {
+                "description": "获取边车的RDS(路由)",
+                "tags": [
+                    "sidecar"
+                ],
+                "summary": "获取边车的RDS(路由)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pod",
+                        "name": "pod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

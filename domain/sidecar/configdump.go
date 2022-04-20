@@ -7,13 +7,16 @@ import (
 	admin "github.com/envoyproxy/go-control-plane/envoy/admin/v3"
 	cluster "github.com/envoyproxy/go-control-plane/envoy/config/cluster/v3"
 	listener "github.com/envoyproxy/go-control-plane/envoy/config/listener/v3"
+	route "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
 	"github.com/golang/protobuf/ptypes/any"
+	"istio.io/istio/pilot/pkg/xds/v3"
 	"istio.io/istio/pkg/util/protomarshal"
 )
 
 const (
 	clusters  string = "type.googleapis.com/envoy.admin.v3.ClustersConfigDump"
 	listeners string = "type.googleapis.com/envoy.admin.v3.ListenersConfigDump"
+	routes    string = "type.googleapis.com/envoy.admin.v3.RoutesConfigDump"
 )
 
 type ConfigDump struct {
@@ -68,7 +71,7 @@ func (c *ConfigDump) GetClusters() ([]*cluster.Cluster, error) {
 	for _, c := range cd.StaticClusters {
 		if c.GetCluster() != nil {
 			tmpCluster := &cluster.Cluster{}
-			c.Cluster.TypeUrl = "type.googleapis.com/envoy.config.cluster.v3.Cluster"
+			c.Cluster.TypeUrl = v3.ClusterType
 			if err := c.Cluster.UnmarshalTo(tmpCluster); err == nil {
 				clusters = append(clusters, tmpCluster)
 			}
@@ -77,7 +80,7 @@ func (c *ConfigDump) GetClusters() ([]*cluster.Cluster, error) {
 	for _, c := range cd.DynamicActiveClusters {
 		if c.GetCluster() != nil {
 			tmpCluster := &cluster.Cluster{}
-			c.Cluster.TypeUrl = "type.googleapis.com/envoy.config.cluster.v3.Cluster"
+			c.Cluster.TypeUrl = v3.ClusterType
 			if err := c.Cluster.UnmarshalTo(tmpCluster); err == nil {
 				clusters = append(clusters, tmpCluster)
 			}
@@ -107,25 +110,69 @@ func (c *ConfigDump) GetListenerConfigDump() (*admin.ListenersConfigDump, error)
 
 func (c *ConfigDump) GetListeners() ([]*listener.Listener, error) {
 	listeners := make([]*listener.Listener, 0)
-	cd, err := c.GetListenerConfigDump()
+	ld, err := c.GetListenerConfigDump()
 	if err != nil {
 		return nil, err
 	}
-	for _, l := range cd.StaticListeners {
+	for _, l := range ld.StaticListeners {
 		tmpListener := &listener.Listener{}
-		l.Listener.TypeUrl = "type.googleapis.com/envoy.config.listener.v3.Listener"
+		l.Listener.TypeUrl = v3.ListenerType
 		if err := l.Listener.UnmarshalTo(tmpListener); err == nil {
 			listeners = append(listeners, tmpListener)
 		}
 	}
 
-	for _, l := range cd.DynamicListeners {
+	for _, l := range ld.DynamicListeners {
 		tmpListener := &listener.Listener{}
-		l.ActiveState.Listener.TypeUrl = "type.googleapis.com/envoy.config.listener.v3.Listener"
+		l.ActiveState.Listener.TypeUrl = v3.ListenerType
 		if err := l.ActiveState.Listener.UnmarshalTo(tmpListener); err == nil {
 			listeners = append(listeners, tmpListener)
 		}
 	}
 
 	return listeners, nil
+}
+
+func (c *ConfigDump) GetRouterConfigDump() (*admin.RoutesConfigDump, error) {
+	var routeDumpAny *any.Any
+	for _, conf := range c.Configs {
+		if conf.TypeUrl == routes {
+			routeDumpAny = conf
+		}
+	}
+	if routeDumpAny == nil {
+		return nil, fmt.Errorf("config dump has no configuration type %s", routes)
+	}
+
+	routeDump := &admin.RoutesConfigDump{}
+	err := routeDumpAny.UnmarshalTo(routeDump)
+	if err != nil {
+		return nil, err
+	}
+	return routeDump, nil
+}
+
+func (c *ConfigDump) GetRouters() ([]*route.RouteConfiguration, error) {
+	routes := make([]*route.RouteConfiguration, 0)
+	rd, err := c.GetRouterConfigDump()
+	if err != nil {
+		return nil, err
+	}
+	for _, r := range rd.StaticRouteConfigs {
+		tmpRoute := &route.RouteConfiguration{}
+		r.RouteConfig.TypeUrl = v3.RouteType
+		if err := r.RouteConfig.UnmarshalTo(tmpRoute); err == nil {
+			routes = append(routes, tmpRoute)
+		}
+	}
+
+	for _, r := range rd.DynamicRouteConfigs {
+		tmpRoute := &route.RouteConfiguration{}
+		r.RouteConfig.TypeUrl = v3.RouteType
+		if err := r.RouteConfig.UnmarshalTo(tmpRoute); err == nil {
+			routes = append(routes, tmpRoute)
+		}
+	}
+
+	return routes, nil
 }

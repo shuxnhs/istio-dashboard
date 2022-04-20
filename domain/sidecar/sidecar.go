@@ -83,6 +83,19 @@ func (s *Sidecar) GetLDS(namespace, pod string) ([]LDS, error) {
 	return ClustersToLDS(configDump), nil
 }
 
+func (s *Sidecar) GetRDS(namespace, pod string) (interface{}, error) {
+	path := "config_dump"
+	config, err := s.EnvoyDo(context.TODO(), pod, namespace, "GET", path)
+	if err != nil {
+		return nil, err
+	}
+	configDump, err := NewConfigDump(config)
+	if err != nil {
+		return nil, err
+	}
+	return ClustersToRDS(configDump), nil
+}
+
 func (s *Sidecar) EnvoyDo(ctx context.Context, podName, podNamespace, method, path string) ([]byte, error) {
 	return s.portForwardRequest(ctx, podName, podNamespace, method, path, 15000)
 }
