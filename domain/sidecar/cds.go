@@ -10,13 +10,6 @@ import (
 	"istio.io/istio/pkg/config/host"
 )
 
-type TrafficDirection string
-
-const (
-	TrafficDirectionInbound  TrafficDirection = "inbound"
-	TrafficDirectionOutbound TrafficDirection = "outbound"
-)
-
 type CDS struct {
 	FQDN            host.Name              `json:"fqdn"`
 	Port            int                    `json:"port"`
@@ -28,7 +21,7 @@ type CDS struct {
 
 func ClustersToCDS(configDump *ConfigDump) []CDS {
 	cds := make([]CDS, 0)
-	clusters, err := configDump.GetCluster()
+	clusters, err := configDump.GetClusters()
 	if err != nil {
 		return cds
 	}

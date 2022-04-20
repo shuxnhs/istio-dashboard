@@ -190,6 +190,46 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/sidecar/lds/list": {
+            "get": {
+                "description": "获取边车的LDS(所有监听端口)",
+                "tags": [
+                    "sidecar"
+                ],
+                "summary": "获取边车的LDS(所有监听端口)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pod",
+                        "name": "pod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/api.Result"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

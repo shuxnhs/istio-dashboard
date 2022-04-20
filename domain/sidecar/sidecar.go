@@ -57,7 +57,7 @@ func (s *Sidecar) GetEDS(namespace, pod string) (EDSInfo, error) {
 	return ClustersToEDSInfo(cluster), nil
 }
 
-func (s *Sidecar) GetCDS(namespace, pod string) (interface{}, error) {
+func (s *Sidecar) GetCDS(namespace, pod string) ([]CDS, error) {
 	path := "config_dump"
 	config, err := s.EnvoyDo(context.TODO(), pod, namespace, "GET", path)
 	if err != nil {
@@ -68,6 +68,19 @@ func (s *Sidecar) GetCDS(namespace, pod string) (interface{}, error) {
 		return nil, err
 	}
 	return ClustersToCDS(configDump), nil
+}
+
+func (s *Sidecar) GetLDS(namespace, pod string) ([]LDS, error) {
+	path := "config_dump"
+	config, err := s.EnvoyDo(context.TODO(), pod, namespace, "GET", path)
+	if err != nil {
+		return nil, err
+	}
+	configDump, err := NewConfigDump(config)
+	if err != nil {
+		return nil, err
+	}
+	return ClustersToLDS(configDump), nil
 }
 
 func (s *Sidecar) EnvoyDo(ctx context.Context, podName, podNamespace, method, path string) ([]byte, error) {
